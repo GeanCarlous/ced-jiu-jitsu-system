@@ -3,11 +3,16 @@ from flask_cors import CORS
 import os
 from dotenv import load_dotenv
 
+# Importa a nossa nova função de inicialização
+from src.config.firebase_config import initialize_firebase
+
 load_dotenv()
 
+# CHAMA A INICIALIZAÇÃO DO FIREBASE AQUI
+initialize_firebase()
+
 app = Flask(__name__)
-#comando para adicionar um traker para erros no render.com, para segurança desative depois
-app.debug = True 
+# caso queira realizar um debig doque está acontecendo (app.debug = True)
 CORS(app)
 
 # Importe os blueprints reais
