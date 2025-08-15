@@ -71,8 +71,8 @@ def get_profile():
         return jsonify({'error': f'Erro interno: {str(e)}'}), 500
 
 @students_bp.route('/', methods=['GET'])
-@require_teacher
 @require_auth
+@require_teacher
 def get_all_students():
     """
     Retorna todos os estudantes (apenas para professores)
@@ -91,8 +91,8 @@ def get_all_students():
         return jsonify({'error': f'Erro interno: {str(e)}'}), 500
 
 @students_bp.route('/close-to-graduation', methods=['GET'])
-@require_teacher
 @require_auth
+@require_teacher
 def get_students_close_to_graduation():
     """
     Retorna estudantes próximos da graduação (apenas para professores)
