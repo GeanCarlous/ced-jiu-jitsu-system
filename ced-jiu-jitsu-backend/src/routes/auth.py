@@ -1,77 +1,23 @@
+from middleware.auth import require_auth, require_teacher
 from flask import Blueprint, request, jsonify
 from firebase_admin import auth
 from models.student import Student
 from models.teacher import Teacher
-from middleware.auth import require_auth, require_teacher
 
 auth_bp = Blueprint('auth', __name__)
 
 @auth_bp.route('/verify-token', methods=['POST'])
+@require_auth # <--- O middleware faz todo o trabalho de verificação aqui!
 def verify_token():
     """
-    Verifica o token de autenticação do Firebase
+    Verifica o token e retorna os dados do usuário já validados pelo middleware
     """
-    try:
-        data = request.get_json()
-        id_token = data.get('idToken')
-        
-        if not id_token:
-            return jsonify({'error': 'Token não fornecido'}), 400
-        
-        # Verificar o token com o Firebase
-        decoded_token = auth.verify_id_token(id_token)
-        uid = decoded_token['uid']
-        email = decoded_token.get('email', '')
-        
-        # Buscar o usuário no Firestore para determinar o papel
-        student = Student.get_by_uid(uid)
-        teacher = Teacher.get_by_uid(uid)
-        
-        if student:
-            user_data = {
-                'uid': uid,
-                'email': email,
-                'role': 'aluno',
-                'name': student.name,
-                'belt': student.belt,
-                'age': student.age,
-                'total_presences': student.total_presences,
-                'presences_for_next_degree': student.calculate_presences_for_next_degree()
-            }
-        elif teacher:
-            user_data = {
-                'uid': uid,
-                'email': email,
-                'role': 'professor',
-                'name': teacher.name
-            }
-        else:
-            # Usuário não encontrado no sistema
-            return jsonify({'error': 'Usuário não encontrado no sistema'}), 404
-        
-        return jsonify({
-            'success': True,
-            'user': user_data
-        }), 200
-        
-    except auth.InvalidIdTokenError:
-        return jsonify({'error': 'Token inválido'}), 401
-    # NOVO CÓDIGO PARA DEPURAR
-    except Exception as e:
-        import traceback  # Importa a biblioteca de rastreamento
-        error_details = traceback.format_exc()  # Captura o Traceback completo como texto
-
-        # Imprime no log do Render (uma tentativa extra)
-        print("--- DETALHES DO ERRO ---")
-        print(error_details)
-        print("------------------------")
-
-        # Envia o Traceback na resposta da API
-        return jsonify({
-            'success': False,
-            'error': 'Erro interno detalhado no servidor.',
-            'details': error_details 
-        }), 500
+    # Se o código chegou até aqui, o usuário é válido.
+    # Agora só precisamos retornar os dados que o middleware preparou em request.current_user
+    return jsonify({
+        'success': True,
+        'user': request.current_user
+    }), 200
 
 @auth_bp.route('/register-student', methods=['POST'])
 @require_auth
@@ -82,20 +28,20 @@ def register_student():
     """
     try:
         data = request.get_json()
-        
-        # Validar dados obrigatórios
-        required_fields = ['name', 'email', 'belt', 'age']
+
+        # CORREÇÃO: Adicionar 'uid' aos campos obrigatórios
+        required_fields = ['uid', 'name', 'email', 'belt', 'age']
         for field in required_fields:
             if field not in data:
                 return jsonify({'error': f'Campo obrigatório: {field}'}), 400
-        
-        # Gerar UID único para o aluno
-        import uuid
-        uid = str(uuid.uuid4())
-        
-        # Criar novo estudante
+
+        # REMOVER a geração de UUID aleatório
+        # import uuid
+        # uid = str(uuid.uuid4())
+
+        # Criar novo estudante com o UID recebido do Firebase Auth
         student = Student(
-            uid=uid,
+            uid=data['uid'], # <--- USAR O UID QUE VEIO DO FRONT-END
             name=data['name'],
             email=data['email'],
             belt=data['belt'],
@@ -104,6 +50,7 @@ def register_student():
             education=data.get('education', ''),
             degrees=int(data.get('degrees', 0))
         )
+
         
         # Salvar no Firestore
         if student.save():
@@ -119,6 +66,9 @@ def register_student():
         return jsonify({'error': f'Erro interno: {str(e)}'}), 500
 
 @auth_bp.route('/register-teacher', methods=['POST'])
+@require_auth     # <--- ADICIONE (no mínimo)
+@require_teacher  # <--- ADICIONE (idealmente, para que só professores possam cadastrar outros)
+
 def register_teacher():
     """
     Registra um novo professor no sistema

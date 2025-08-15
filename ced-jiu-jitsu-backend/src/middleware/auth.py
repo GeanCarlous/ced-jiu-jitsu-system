@@ -51,17 +51,15 @@ def require_auth(f):
     
     return decorated_function
 
+# CÓDIGO CORRIGIDO
 def require_teacher(f):
-    """
-    Decorator que requer que o usuário seja um professor
-    """
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        user = getattr(request, 'user', None)
+        # CORREÇÃO: Usar 'current_user' em vez de 'user'
+        user = getattr(request, 'current_user', None) 
         if not user or user.get('role') != 'professor':
             return jsonify({'error': 'Acesso restrito a professores'}), 403
         return f(*args, **kwargs)
-    
     return decorated_function
 
 def require_student(f):
