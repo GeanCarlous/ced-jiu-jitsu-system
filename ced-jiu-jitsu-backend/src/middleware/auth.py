@@ -10,45 +10,37 @@ def require_auth(f):
     """
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        auth_header = request.headers.get('Authorization', None)
+        auth_header = request.headers.get('Authorization')
         if not auth_header or not auth_header.startswith('Bearer '):
             return jsonify({'error': 'Token não fornecido'}), 401
-        token = auth_header.split(' ')[1]
+        
+        token = auth_header.split(" ").pop()
         try:
             decoded_token = auth.verify_id_token(token)
-            request.user = decoded_token
-        except Exception:
-            return jsonify({'error': 'Token inválido'}), 401
+            uid = decoded_token['uid']
+            
+            # 1. Tenta encontrar como Aluno primeiro
+            student = Student.get_by_uid(uid)
+            if student:
+                user_data = student.to_dict()
+                user_data['role'] = 'aluno'
+                request.current_user = user_data
+                return f(*args, **kwargs)
 
-        uid = decoded_token['uid']
-        email = decoded_token.get('email', '')
-        
-        # Buscar o usuário no sistema
-        student = Student.get_by_uid(uid)
-        teacher = Teacher.get_by_uid(uid)
-        
-        if student:
-            user_data = {
-                'uid': uid,
-                'email': email,
-                'role': 'aluno',
-                'name': student.name
-            }
-        elif teacher:
-            user_data = {
-                'uid': uid,
-                'email': email,
-                'role': 'professor',
-                'name': teacher.name
-            }
-        else:
+            # 2. Se não for aluno, tenta encontrar como Professor
+            teacher = Teacher.get_by_uid(uid)
+            if teacher:
+                user_data = teacher.to_dict()
+                user_data['role'] = 'professor'
+                request.current_user = user_data
+                return f(*args, **kwargs)
+
+            # 3. Se não encontrou em nenhuma coleção, o usuário não existe no sistema
             return jsonify({'error': 'Usuário não encontrado no sistema'}), 404
-        
-        # Adicionar dados do usuário à requisição
-        request.current_user = user_data
-        
-        return f(*args, **kwargs)
-    
+
+        except Exception as e:
+            return jsonify({'error': 'Token inválido ou expirado', 'details': str(e)}), 401
+            
     return decorated_function
 
 # CÓDIGO CORRIGIDO
