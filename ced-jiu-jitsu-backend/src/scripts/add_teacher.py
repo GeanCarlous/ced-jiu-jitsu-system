@@ -1,4 +1,4 @@
-from src.config import get_db
+from config.firebase_config import get_db
 
 db = get_db()
 # Substitua pelo UID real do professor cadastrado no Firebase Auth

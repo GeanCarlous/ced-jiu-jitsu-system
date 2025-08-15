@@ -41,7 +41,7 @@ def serve_react_app(path):
         else:
             return "Sistema CED Jiu-Jitsu - Em desenvolvimento", 200
 
-from src.config import get_db
+from config.firebase_config import get_db
 from flask import jsonify
 
 @app.route('/api/firebase-test')
