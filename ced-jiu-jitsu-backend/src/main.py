@@ -4,7 +4,7 @@ import os
 from dotenv import load_dotenv
 
 # Importa a nossa nova função de inicialização
-from src.config.firebase_config import initialize_firebase
+from config.firebase_config import initialize_firebase
 
 load_dotenv()
 
@@ -16,9 +16,9 @@ app = Flask(__name__)
 CORS(app)
 
 # Importe os blueprints reais
-from src.routes.students import students_bp
-from src.routes.attendance import attendance_bp
-from src.routes.auth import auth_bp
+from routes.students import students_bp
+from routes.attendance import attendance_bp
+from routes.auth import auth_bp
 # Adicione outros blueprints se necessário
 
 # Registre os blueprints com prefixo /api
