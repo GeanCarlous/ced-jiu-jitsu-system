@@ -56,8 +56,22 @@ def verify_token():
         
     except auth.InvalidIdTokenError:
         return jsonify({'error': 'Token inválido'}), 401
+    # NOVO CÓDIGO PARA DEPURAR
     except Exception as e:
-        return jsonify({'error': f'Erro interno: {str(e)}'}), 500
+        import traceback  # Importa a biblioteca de rastreamento
+        error_details = traceback.format_exc()  # Captura o Traceback completo como texto
+
+        # Imprime no log do Render (uma tentativa extra)
+        print("--- DETALHES DO ERRO ---")
+        print(error_details)
+        print("------------------------")
+
+        # Envia o Traceback na resposta da API
+        return jsonify({
+            'success': False,
+            'error': 'Erro interno detalhado no servidor.',
+            'details': error_details 
+        }), 500
 
 @auth_bp.route('/register-student', methods=['POST'])
 @require_auth
