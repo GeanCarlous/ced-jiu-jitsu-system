@@ -32,25 +32,25 @@ class Teacher:
             email=data.get('email', '')
         )
     
-    # CÓDIGO CORRIGIDO PARA USAR A COLEÇÃO 'teachers'
-def save(self) -> bool:
-    """
-    Salva o professor no Firestore
-    """
-    try:
-        db = get_db()
-        # ALTERAÇÃO: Salvar na coleção 'teachers'
-        teacher_ref = db.collection('teachers').document(self.uid)
-        # O método self.to_dict() já formata os dados corretamente
-        teacher_ref.set(self.to_dict(), merge=True)
-        return True
-    except Exception as e:
-        print(f"Erro ao salvar professor: {e}")
-        return False
-    
-    # CÓDIGO CORRIGIDO PARA USAR A COLEÇÃO 'teachers'
+        # CÓDIGO CORRIGIDO PARA USAR A COLEÇÃO 'teachers'
+    def save(self) -> bool:
+        """
+        Salva o professor no Firestore
+        """
+        try:
+            db = get_db()
+            # ALTERAÇÃO: Salvar na coleção 'teachers'
+            teacher_ref = db.collection('teachers').document(self.uid)
+            # O método self.to_dict() já formata os dados corretamente
+            teacher_ref.set(self.to_dict(), merge=True)
+            return True
+        except Exception as e:
+            print(f"Erro ao salvar professor: {e}")
+            return False
+        
+        # CÓDIGO CORRIGIDO PARA USAR A COLEÇÃO 'teachers'
     @classmethod
-    def get_by_uid(cls, uid: str) -> Optional['Teacher']:
+     def get_by_uid(cls, uid: str) -> Optional['Teacher']:
         try:
             db = get_db()
             # ALTERAÇÃO: Procurar na coleção 'teachers' em vez de 'users'
