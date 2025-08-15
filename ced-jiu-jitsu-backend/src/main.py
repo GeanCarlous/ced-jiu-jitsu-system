@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
+app.debug = true #comando para adicionar um traker para erros no render.com, para segurança desative depois
 CORS(app)
 
 # Importe os blueprints reais
