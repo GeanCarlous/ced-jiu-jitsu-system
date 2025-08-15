@@ -1,8 +1,8 @@
 from flask import Blueprint, request, jsonify
 from datetime import datetime
-from src.models.student import Student
-from src.models.class_session import ClassSession
-from src.middleware.auth import require_auth, require_teacher
+from models.student import Student
+from models.class_session import ClassSession
+from middleware.auth import require_auth, require_teacher
 
 attendance_bp = Blueprint('attendance', __name__)
 

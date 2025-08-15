@@ -1,8 +1,8 @@
 from functools import wraps
 from flask import request, jsonify
 from firebase_admin import auth
-from src.models.student import Student
-from src.models.teacher import Teacher
+from models.student import Student
+from models.teacher import Teacher
 
 def require_auth(f):
     """

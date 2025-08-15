@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
-from src.models.student import Student
-from src.middleware.auth import require_auth, require_teacher
+from models.student import Student
+from middleware.auth import require_auth, require_teacher
 import logging
 
 # Configurar logging

@@ -1,8 +1,8 @@
 from flask import Blueprint, request, jsonify
 from firebase_admin import auth
-from src.models.student import Student
-from src.models.teacher import Teacher
-from src.middleware.auth import require_auth, require_teacher
+from models.student import Student
+from models.teacher import Teacher
+from middleware.auth import require_auth, require_teacher
 
 auth_bp = Blueprint('auth', __name__)
 

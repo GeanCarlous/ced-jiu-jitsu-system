@@ -1,5 +1,5 @@
 from typing import Dict, Optional
-from src.config import get_db
+from config.firebase_config import get_db
 
 class Teacher:
     """
