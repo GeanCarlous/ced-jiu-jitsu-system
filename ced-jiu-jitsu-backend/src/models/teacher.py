@@ -54,20 +54,18 @@ class Teacher:
             print(f"Erro ao salvar professor: {e}")
             return False
     
+    # CÓDIGO CORRIGIDO PARA USAR A COLEÇÃO 'teachers'
     @classmethod
     def get_by_uid(cls, uid: str) -> Optional['Teacher']:
-        """
-        Busca um professor pelo UID
-        """
         try:
             db = get_db()
-            user_ref = db.collection('users').document(uid)
-            doc = user_ref.get()
-            
+            # ALTERAÇÃO: Procurar na coleção 'teachers' em vez de 'users'
+            teacher_ref = db.collection('teachers').document(uid)
+            doc = teacher_ref.get()
+
             if doc.exists:
-                data = doc.to_dict()
-                if data.get('role') == 'professor':
-                    return cls.from_dict(data)
+                # Não precisamos mais verificar o 'role' aqui
+                return cls.from_dict(doc.to_dict())
             return None
         except Exception as e:
             print(f"Erro ao buscar professor: {e}")
