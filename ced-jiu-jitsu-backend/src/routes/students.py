@@ -72,6 +72,7 @@ def get_profile():
 
 @students_bp.route('/', methods=['GET'])
 @require_teacher
+@require_auth
 def get_all_students():
     """
     Retorna todos os estudantes (apenas para professores)
@@ -91,6 +92,7 @@ def get_all_students():
 
 @students_bp.route('/close-to-graduation', methods=['GET'])
 @require_teacher
+@require_auth
 def get_students_close_to_graduation():
     """
     Retorna estudantes próximos da graduação (apenas para professores)
