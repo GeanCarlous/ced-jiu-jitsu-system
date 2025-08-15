@@ -50,7 +50,7 @@ class Teacher:
         
         # CÓDIGO CORRIGIDO PARA USAR A COLEÇÃO 'teachers'
     @classmethod
-     def get_by_uid(cls, uid: str) -> Optional['Teacher']:
+    def get_by_uid(cls, uid: str) -> Optional['Teacher']:
         try:
             db = get_db()
             # ALTERAÇÃO: Procurar na coleção 'teachers' em vez de 'users'
