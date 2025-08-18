@@ -220,6 +220,26 @@ class Student:
             logger.error(f"Erro ao adicionar presença para {self.uid}: {e}")
             return False
     
+    # Adicione este método dentro da classe Student em src/models/student.py
+
+    def set_total_presences(self, count: int) -> bool:
+        """
+        Define um novo valor para o total de presenças do aluno.
+        """
+        try:
+            if count < 0:
+                # Garante que o número de presenças não seja negativo
+                self.total_presences = 0
+            else:
+                self.total_presences = count
+
+            # Salva a alteração no banco de dados
+            return self.save()
+        except Exception as e:
+            logger.error(f"Erro ao definir presenças para {self.uid}: {e}")
+            return False
+
+
     def save(self) -> bool:
         """
         Salva o estudante no Firestore

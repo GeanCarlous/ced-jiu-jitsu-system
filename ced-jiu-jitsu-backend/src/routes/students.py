@@ -372,3 +372,38 @@ def get_student(student_uid):
         logger.error(f"Erro ao buscar estudante: {e}")
         return jsonify({'error': f'Erro interno: {str(e)}'}), 500
 
+# Adicione esta rota no final do arquivo src/routes/students.py
+
+@students_bp.route('/<student_uid>/set-attendance', methods=['POST'])
+@require_auth
+@require_teacher
+def set_student_attendance(student_uid):
+    """
+    Permite que um professor defina manualmente o total de presenças de um aluno.
+    (Apenas para professores)
+    """
+    try:
+        data = request.get_json()
+        if 'total_presences' not in data:
+            return jsonify({'error': 'O campo total_presences é obrigatório'}), 400
+
+        new_total = int(data['total_presences'])
+
+        student = Student.get_by_uid(student_uid)
+        if not student:
+            return jsonify({'error': 'Estudante não encontrado'}), 404
+
+        if student.set_total_presences(new_total):
+            return jsonify({
+                'success': True,
+                'message': f'Total de presenças de {student.name} atualizado para {new_total}.',
+                'student': student.to_dict()
+            }), 200
+        else:
+            return jsonify({'error': 'Erro ao atualizar as presenças'}), 500
+
+    except ValueError:
+        return jsonify({'error': 'total_presences deve ser um número inteiro'}), 400
+    except Exception as e:
+        logger.error(f"Erro ao definir presenças para o aluno {student_uid}: {e}")
+        return jsonify({'error': f'Erro interno: {str(e)}'}), 500
