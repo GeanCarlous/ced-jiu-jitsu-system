@@ -6,6 +6,7 @@ from models.teacher import Teacher
 
 auth_bp = Blueprint('auth', __name__)
 
+@auth_bp.route('/verify-token/', methods=['POST'])
 @auth_bp.route('/verify-token', methods=['POST'])
 @require_auth # <--- O middleware faz todo o trabalho de verificação aqui!
 def verify_token():
