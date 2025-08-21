@@ -22,9 +22,9 @@ from routes.auth import auth_bp
 # Adicione outros blueprints se necessário
 
 # Registre os blueprints com prefixo /api
-app.register_blueprint(students_bp, url_prefix='/api/students', strict_slashes=False)
-app.register_blueprint(attendance_bp, url_prefix='/api/attendance', strict_slashes=False)
-app.register_blueprint(auth_bp, url_prefix='/api/auth', strict_slashes=False)
+app.register_blueprint(students_bp, url_prefix='/api/students')
+app.register_blueprint(attendance_bp, url_prefix='/api/attendance')
+app.register_blueprint(auth_bp, url_prefix='/api/auth')
 # app.register_blueprint(...)
 
 # Servir arquivos estáticos do React

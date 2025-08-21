@@ -110,6 +110,7 @@ def get_students_close_to_graduation():
         logger.error(f"Erro ao buscar estudantes próximos da graduação: {e}")
         return jsonify({'error': f'Erro interno: {str(e)}'}), 500
 
+@students_bp.route('', methods=['POST'])
 @students_bp.route('/', methods=['POST'])
 @require_auth
 @require_teacher
