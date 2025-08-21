@@ -6,7 +6,7 @@ import logging
 # Configurar logging
 logger = logging.getLogger(__name__)
 
-students_bp = Blueprint('students', __name__, strict_slashes=False)
+students_bp = Blueprint('students', __name__)
 
 @students_bp.route('/update-profile', methods=['PUT'])
 @require_auth
