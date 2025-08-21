@@ -110,46 +110,46 @@ class Student:
         return belt_progression.get(self.belt, 'azul')
     
     def calculate_presences_for_next_degree(self) -> int:
-    """
-    Calcula quantas presenças faltam para o próximo grau
-    baseado nas novas regras de graduação com atividades extras
-    """
-    try:
-        # Para faixa preta, usar regras de tempo
-        if self.belt == 'preta':
-            return 0  # Faixa preta é baseada em tempo, não presenças
-        
-        # Obter requisitos da faixa atual
-        requirements = self.get_belt_requirements()
-        
-        # --- CORREÇÃO APLICADA AQUI ---
-        # Garante que os valores sejam inteiros antes de comparar
-        extra_activities = int(self.extra_activities)
-        degrees = int(self.degrees)
-        total_presences = int(self.total_presences)
-        
-        # Calcular presenças necessárias para o próximo grau
-        if extra_activities > degrees:
-            # Aluno fez atividade extra para este grau
-            presences_needed = requirements['with_activity']
-        else:
-            # Aluno não fez atividade extra para este grau
-            presences_needed = requirements['normal']
-        
-        # Calcular presenças acumuladas necessárias até o grau atual
-        total_presences_needed = 0
-        for degree in range(degrees + 1):
-            if extra_activities > degree:
-                total_presences_needed += requirements['with_activity']
+        """
+        Calcula quantas presenças faltam para o próximo grau
+        baseado nas novas regras de graduação com atividades extras
+        """
+        try:
+            # Para faixa preta, usar regras de tempo
+            if self.belt == 'preta':
+                return 0  # Faixa preta é baseada em tempo, não presenças
+            
+            # Obter requisitos da faixa atual
+            requirements = self.get_belt_requirements()
+            
+            # --- CORREÇÃO APLICADA AQUI ---
+            # Garante que os valores sejam inteiros antes de comparar
+            extra_activities = int(self.extra_activities)
+            degrees = int(self.degrees)
+            total_presences = int(self.total_presences)
+            
+            # Calcular presenças necessárias para o próximo grau
+            if extra_activities > degrees:
+                # Aluno fez atividade extra para este grau
+                presences_needed = requirements['with_activity']
             else:
-                total_presences_needed += requirements['normal']
+                # Aluno não fez atividade extra para este grau
+                presences_needed = requirements['normal']
+            
+            # Calcular presenças acumuladas necessárias até o grau atual
+            total_presences_needed = 0
+            for degree in range(degrees + 1):
+                if extra_activities > degree:
+                    total_presences_needed += requirements['with_activity']
+                else:
+                    total_presences_needed += requirements['normal']
+            
+            # Retornar quantas presenças faltam
+            return max(0, total_presences_needed - total_presences)
         
-        # Retornar quantas presenças faltam
-        return max(0, total_presences_needed - total_presences)
-        
-    except Exception as e:
-        logger.error(f"Erro ao calcular presenças para próximo grau: {e}")
-        return 0
+        except Exception as e:
+            logger.error(f"Erro ao calcular presenças para próximo grau: {e}")
+            return 0
     
     def is_ready_for_next_belt(self) -> bool:
         """
