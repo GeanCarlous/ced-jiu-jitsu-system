@@ -12,8 +12,13 @@ load_dotenv()
 initialize_firebase()
 
 app = Flask(__name__)
+
 # caso queira realizar um debig doque está acontecendo (app.debug = True)
-CORS(app)
+# --- 2. CONFIGURAÇÃO DO CORS ---
+# Aplique o CORS à sua aplicação, permitindo requisições
+# exclusivamente do seu frontend.
+CORS(app, resources={r"/api/*": {"origins": "https://ced-jiu-jitsu.web.app"}})
+# -----------------------------
 
 # Importe os blueprints reais
 from routes.students import students_bp
