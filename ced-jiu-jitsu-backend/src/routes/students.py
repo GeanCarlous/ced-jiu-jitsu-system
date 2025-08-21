@@ -111,6 +111,7 @@ def get_students_close_to_graduation():
         return jsonify({'error': f'Erro interno: {str(e)}'}), 500
 
 @students_bp.route('/', methods=['POST'])
+@require_auth
 @require_teacher
 def create_student():
     """
