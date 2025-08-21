@@ -128,7 +128,7 @@ def create_student():
         
         # Criar novo estudante
         student = Student(
-            uid=data.get('uid', ''),  # UID será gerado pelo Firebase Auth
+            uid=data['uid'],
             name=data['name'],
             email=data['email'],
             belt=data['belt'],
